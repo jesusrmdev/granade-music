@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { logout } from "@/lib/auth/actions";
 
 export default function Home() {
   return (
@@ -26,14 +25,6 @@ export default function Home() {
         >
           Comenzar
         </Link>
-        <form action={logout}>
-          <button
-            type="submit"
-            className="text-sm text-zinc-400 underline-offset-2 hover:underline dark:text-zinc-500"
-          >
-            Cerrar sesión
-          </button>
-        </form>
       </div>
     </div>
   );

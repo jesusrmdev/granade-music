@@ -28,6 +28,11 @@ async function setSessionCookie(session: Record<string, unknown>) {
   }
 }
 
+async function setRoleCookie(role: string | null) {
+  const c = await cookies()
+  c.set(`${authCookie()}-role`, role ?? 'student', await cookieOpts(400 * 24 * 60 * 60))
+}
+
 async function clearSessionCookie() {
   const c = await cookies()
   const opts = await cookieOpts(0)
@@ -37,6 +42,7 @@ async function clearSessionCookie() {
     if (!c.get(`${name}.${i}`)) break
     c.set(`${name}.${i}`, '', opts)
   }
+  c.set(`${name}-role`, '', opts)
 }
 
 export interface AuthState { error: string | null }
@@ -52,6 +58,7 @@ export async function login(prevState: AuthState | null, formData: FormData): Pr
     await setSessionCookie(session)
 
     const role = await getUserRole(session.access_token)
+    await setRoleCookie(role)
     revalidatePath('/')
     redirect(role === 'admin' ? '/admin' : '/dashboard')
   } catch (e) {
@@ -76,6 +83,8 @@ export async function signup(prevState: AuthState | null, formData: FormData): P
     if (session.access_token) {
       session.expires_at ??= Math.floor(Date.now() / 1000) + (session.expires_in ?? 3600)
       await setSessionCookie(session)
+      const role = await getUserRole(session.access_token)
+      await setRoleCookie(role)
     }
     revalidatePath('/')
     redirect('/dashboard')

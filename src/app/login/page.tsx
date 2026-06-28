@@ -3,16 +3,16 @@
 import { useActionState, useState } from 'react'
 import Link from 'next/link'
 import { login, signup } from '@/lib/auth/actions'
-import { getGoogleOAuthUrl } from '@/lib/supabase/action'
 
 type Tab = 'login' | 'register'
 
 function GoogleButton({ label }: { label: string }) {
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
   return (
-    <a
-      href={getGoogleOAuthUrl(origin)}
-      className="flex w-full items-center justify-center gap-2 rounded-full border border-zinc-300 px-6 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+    <button
+      type="button"
+      disabled
+      className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-full border border-zinc-200 px-6 py-2.5 text-sm font-medium text-zinc-400 dark:border-zinc-700 dark:text-zinc-600"
+      title="Próximamente"
     >
       <svg className="h-5 w-5" viewBox="0 0 24 24">
         <path
@@ -33,7 +33,7 @@ function GoogleButton({ label }: { label: string }) {
         />
       </svg>
       {label}
-    </a>
+    </button>
   )
 }
 
