@@ -1,28 +1,23 @@
 'use client'
+/* eslint-disable react-hooks/set-state-in-effect */
 
-import { useCallback, useEffect, useState } from 'react'
-
-function getInitialDark(): boolean {
-  if (typeof window === 'undefined') return false
-  const stored = localStorage.getItem('theme')
-  if (stored) return stored === 'dark'
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-}
+import { useEffect, useState } from 'react'
 
 export default function DarkModeToggle() {
-  const [dark, setDark] = useState(getInitialDark)
+  const [dark, setDark] = useState(false)
+
+  useEffect(() => {
+    setDark(document.documentElement.classList.contains('dark'))
+  }, [])
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
+    localStorage.setItem('theme', dark ? 'dark' : 'light')
   }, [dark])
 
-  const toggle = useCallback(() => {
-    setDark(prev => {
-      const next = !prev
-      localStorage.setItem('theme', next ? 'dark' : 'light')
-      return next
-    })
-  }, [])
+  function toggle() {
+    setDark(prev => !prev)
+  }
 
   return (
     <button
