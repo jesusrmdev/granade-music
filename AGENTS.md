@@ -239,6 +239,12 @@ The goal is not only to finish the application, but to build it with professiona
 
 # Session Log
 
+## 2026-06-28 — v0.2.0 - Landing page
+
+- Feature 001: Landing page implemented (logo + name + tagline + CTA)
+- Branch: `feature/001-landing-page`, PR #1, merge commit, tag v0.2.0
+- CHANGELOG.md created
+
 ## 2026-06-28 — Project restart (SDD methodology)
 
 - **Decision**: Restart from scratch following Spec-Driven Development (SDD) from Brais Moure's course
