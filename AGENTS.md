@@ -239,6 +239,17 @@ The goal is not only to finish the application, but to build it with professiona
 
 # Session Log
 
+## 2026-06-28 — v0.4.1 - Dark mode fix
+
+- **Critical bug**: Dark mode toggle did not switch themes after v0.4.0
+- **Root causes** (3):
+  1. Tailwind v4 defaults to `prefers-color-scheme` media query — CSS fix: `@custom-variant dark` in `globals.css`
+  2. `DarkModeToggle` second `useEffect` relied on React's async effect queue to apply `.dark` class — JS fix: toggle manipulates `classList` synchronously in click handler
+  3. Inline `<head>` script (needed to set class before hydration) was removed in initial fix attempt — restored
+- **Branches**: `fix/dark-mode`, `fix/dark-mode-toggle`, `fix/dark-mode-v3` (PRs #4, #5, #6)
+- **SDD artifacts created**: `spec/features/004-catalogo-cursos/` (spec, plan, tasks — ready for next session)
+- **Lesson**: `@custom-variant dark` overrides the built-in `dark` variant in Tailwind v4; the correct pattern is mount-effect-to-read-DOM + synchronous toggle; `suppressHydrationWarning` preserves inline-script class changes during hydration
+
 ## 2026-06-28 — v0.4.0 - Header + Layout
 
 - Feature 003: Header with navigation, dark mode toggle, role-based links
