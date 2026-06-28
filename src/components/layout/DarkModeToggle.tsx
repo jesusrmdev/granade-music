@@ -10,13 +10,11 @@ export default function DarkModeToggle() {
     setDark(document.documentElement.classList.contains('dark'))
   }, [])
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark)
-    localStorage.setItem('theme', dark ? 'dark' : 'light')
-  }, [dark])
-
   function toggle() {
-    setDark(prev => !prev)
+    const next = !dark
+    setDark(next)
+    document.documentElement.classList.toggle('dark', next)
+    localStorage.setItem('theme', next ? 'dark' : 'light')
   }
 
   return (
