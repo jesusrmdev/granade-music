@@ -8,6 +8,10 @@
 
 2. **002 · Autenticación** — Login, registro y logout con Supabase Auth (raw fetch).
 
+## Siguiente 🔜
+
+3. **003 · Header + Layout** — Barra de navegación superior, modo oscuro toggle.
+
 ## Backlog / ideas 💡
 
 - **003 · Header + Layout** — Barra de navegación superior, modo oscuro toggle.
