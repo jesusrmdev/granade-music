@@ -4,7 +4,10 @@
 
 ### Fixed
 
-- Dark mode toggle not switching light/dark (Tailwind v4 defaults to media query, not class; inline script was removed; effect never applied class on mount)
+- Dark mode toggle not switching themes — three root causes:
+  - Tailwind v4 defaults to `prefers-color-scheme` media query, not the `.dark` class (CSS fix: `@custom-variant dark`)
+  - Second `useEffect` relied on React's async effect queue to apply the `.dark` class, causing first click to go in wrong direction if React state was desynchronized from DOM (JS fix: toggle manipulates `classList` synchronously in click handler)
+  - Initial fix accidentally removed inline `<head>` script needed to set class before hydration (restored)
 
 ### Added
 
