@@ -239,6 +239,13 @@ The goal is not only to finish the application, but to build it with professiona
 
 # Session Log
 
+## 2026-06-28 — v0.4.0 - Header + Layout
+
+- Feature 003: Header with navigation, dark mode toggle, role-based links
+- Branch: `feature/003-header-layout`, PR #3, merge commit, tag v0.4.0
+- Google OAuth button disabled temporarily
+- Role cookie added for server-side role detection
+
 ## 2026-06-28 — v0.3.0 - Authentication
 
 - Feature 002: Authentication implemented (login/register/logout + Google OAuth)

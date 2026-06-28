@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.0] — 2026-06-28
+
+### Added
+
+- Sticky header with logo, navigation, and role-based links
+- Dark mode toggle (sol/luna icons) with localStorage persistence
+- Script in `<head>` to prevent flash of wrong theme
+- Role cookie (`sb-{ref}-auth-token-role`) for server-side role detection
+- Logout button in header for authenticated users
+
+### Changed
+
+- Google OAuth button disabled (pending provider configuration)
+- Landing page simplified (logout moved to header)
+
 ## [0.3.0] — 2026-06-28
 
 ### Added
