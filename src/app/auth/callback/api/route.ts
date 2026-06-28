@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
   }
 
   const role = await getUserRole(accessToken)
+  c.set(`${name}-role`, role ?? 'student', await cookieOpts(400 * 24 * 60 * 60))
   const redirect = role === 'admin' ? '/admin' : '/dashboard'
 
   return NextResponse.json({ redirect })
