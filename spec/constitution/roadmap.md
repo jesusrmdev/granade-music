@@ -1,25 +1,19 @@
 # Roadmap
 
-_Orden y estado de las features. Es la vista de "qué hay hecho, qué toca ahora y qué viene". Cada entrada apunta a su carpeta en `features/`._
-
 ## Hecho ✅
 
-_Features completadas, en orden de implementación._
-
-1. **NNN · <Nombre>** — <una línea de qué resuelve>.
-2. **NNN · <Nombre>** — <una línea de qué resuelve>.
+1. **001 · Landing Page** — Página principal pública con logo, nombre, eslogan y botón "Comenzar".
 
 ## Siguiente 🔜
 
-_Lo próximo a abordar. Idealmente una sola feature "en curso" a la vez._
-
-3. **NNN · <Nombre>** — <una línea de qué resuelve>.
+2. **002 · Autenticación** — Login, registro y logout con Supabase Auth (raw fetch).
 
 ## Backlog / ideas 💡
 
-_Sin comprometer ni ordenar del todo. Ideas que respetan la constitución._
-
-- **<Nombre>** — <qué aportaría>.
-- **<Nombre>** — <qué aportaría>.
-
-> Cada feature nueva se crea como `features/NNN-nombre-feature/` con `spec.md`, `plan.md` y `tasks.md` antes de tocar código.
+- **003 · Header + Layout** — Barra de navegación superior, modo oscuro toggle.
+- **004 · Catálogo de cursos** — Lista pública de cursos disponibles.
+- **005 · Matrícula** — Enrollarse en un curso.
+- **006 · Dashboard alumno** — Progreso por sesión, marcar completada.
+- **007 · Admin CRUD** — Crear/editar/eliminar cursos, módulos, lecciones.
+- **008 · Subida de archivos** — MP3/PDF/MP4 a Supabase Storage.
+- **009 · Admin: alumnos** — Ver alumnos matriculados y su progreso.
