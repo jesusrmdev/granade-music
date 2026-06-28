@@ -2,6 +2,10 @@
 
 ## [0.4.0] — 2026-06-28
 
+### Fixed
+
+- Dark mode toggle not switching light/dark (Tailwind v4 defaults to media query, not class; inline script was removed; effect never applied class on mount)
+
 ### Added
 
 - Sticky header with logo, navigation, and role-based links
