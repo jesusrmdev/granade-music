@@ -239,6 +239,13 @@ The goal is not only to finish the application, but to build it with professiona
 
 # Session Log
 
+## 2026-06-28 — v0.3.0 - Authentication
+
+- Feature 002: Authentication implemented (login/register/logout + Google OAuth)
+- Branch: `feature/002-authentication`, PR #2, merge commit, tag v0.3.0
+- Supabase project created: `fopeiowtwobxbwgugnml`
+- Schema: users table + auto-create trigger
+
 ## 2026-06-28 — v0.2.0 - Landing page
 
 - Feature 001: Landing page implemented (logo + name + tagline + CTA)

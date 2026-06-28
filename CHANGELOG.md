@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0] — 2026-06-28
+
+### Added
+
+- Login page with email/password form (tab "Iniciar sesión")
+- Registration form with name + lastName + email + password (tab "Crear cuenta")
+- Google OAuth button with redirect callback flow
+- Session cookie management (sb-{ref}-auth-token with chunking)
+- Role detection (student/admin) via public.users table
+- Logout action from landing page
+- `src/lib/supabase/action.ts` — raw fetch helpers (no @supabase/supabase-js)
+- `src/lib/auth/actions.ts` — server actions for login/signup/logout
+- `supabase/schema.sql` — users table + auto-create trigger from auth.users
+
 ## [0.2.0] — 2026-06-28
 
 ### Added
