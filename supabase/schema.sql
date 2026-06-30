@@ -32,6 +32,7 @@ CREATE OR REPLACE TRIGGER on_auth_user_created
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
 -- Users can read their own row
+DROP POLICY IF EXISTS "users_read_own" ON public.users;
 CREATE POLICY "users_read_own" ON public.users
   FOR SELECT USING (auth.uid() = id);
 
@@ -48,6 +49,7 @@ CREATE TABLE IF NOT EXISTS public.courses (
 ALTER TABLE public.courses ENABLE ROW LEVEL SECURITY;
 
 -- Anyone can read courses (public catalog)
+DROP POLICY IF EXISTS "courses_read_public" ON public.courses;
 CREATE POLICY "courses_read_public" ON public.courses
   FOR SELECT USING (true);
 
@@ -72,28 +74,34 @@ CREATE TABLE IF NOT EXISTS public.enrollments (
 ALTER TABLE public.enrollments ENABLE ROW LEVEL SECURITY;
 
 -- Students can read their own enrollments
+DROP POLICY IF EXISTS "enrollments_read_own" ON public.enrollments;
 CREATE POLICY "enrollments_read_own" ON public.enrollments
   FOR SELECT USING (auth.uid() = user_id);
 
 -- Students can enroll themselves
+DROP POLICY IF EXISTS "enrollments_insert_own" ON public.enrollments;
 CREATE POLICY "enrollments_insert_own" ON public.enrollments
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- Students can unenroll themselves
+DROP POLICY IF EXISTS "enrollments_delete_own" ON public.enrollments;
 CREATE POLICY "enrollments_delete_own" ON public.enrollments
   FOR DELETE USING (auth.uid() = user_id);
 
 -- Admin-only write policies for courses
+DROP POLICY IF EXISTS "courses_insert_admin" ON public.courses;
 CREATE POLICY "courses_insert_admin" ON public.courses
   FOR INSERT WITH CHECK (
     EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
   );
 
+DROP POLICY IF EXISTS "courses_update_admin" ON public.courses;
 CREATE POLICY "courses_update_admin" ON public.courses
   FOR UPDATE USING (
     EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
   );
 
+DROP POLICY IF EXISTS "courses_delete_admin" ON public.courses;
 CREATE POLICY "courses_delete_admin" ON public.courses
   FOR DELETE USING (
     EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
@@ -112,20 +120,24 @@ CREATE TABLE IF NOT EXISTS public.modules (
 ALTER TABLE public.modules ENABLE ROW LEVEL SECURITY;
 
 -- Anyone can read modules
+DROP POLICY IF EXISTS "modules_read_public" ON public.modules;
 CREATE POLICY "modules_read_public" ON public.modules
   FOR SELECT USING (true);
 
 -- Admin write
+DROP POLICY IF EXISTS "modules_insert_admin" ON public.modules;
 CREATE POLICY "modules_insert_admin" ON public.modules
   FOR INSERT WITH CHECK (
     EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
   );
 
+DROP POLICY IF EXISTS "modules_update_admin" ON public.modules;
 CREATE POLICY "modules_update_admin" ON public.modules
   FOR UPDATE USING (
     EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
   );
 
+DROP POLICY IF EXISTS "modules_delete_admin" ON public.modules;
 CREATE POLICY "modules_delete_admin" ON public.modules
   FOR DELETE USING (
     EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
@@ -144,20 +156,24 @@ CREATE TABLE IF NOT EXISTS public.lessons (
 ALTER TABLE public.lessons ENABLE ROW LEVEL SECURITY;
 
 -- Anyone can read lessons
+DROP POLICY IF EXISTS "lessons_read_public" ON public.lessons;
 CREATE POLICY "lessons_read_public" ON public.lessons
   FOR SELECT USING (true);
 
 -- Admin write
+DROP POLICY IF EXISTS "lessons_insert_admin" ON public.lessons;
 CREATE POLICY "lessons_insert_admin" ON public.lessons
   FOR INSERT WITH CHECK (
     EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
   );
 
+DROP POLICY IF EXISTS "lessons_update_admin" ON public.lessons;
 CREATE POLICY "lessons_update_admin" ON public.lessons
   FOR UPDATE USING (
     EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
   );
 
+DROP POLICY IF EXISTS "lessons_delete_admin" ON public.lessons;
 CREATE POLICY "lessons_delete_admin" ON public.lessons
   FOR DELETE USING (
     EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
