@@ -38,14 +38,6 @@ export default async function Header() {
               >
                 {role === 'admin' ? 'Admin' : 'Mi clase'}
               </Link>
-              {role === 'student' && (
-                <Link
-                  href="/perfil"
-                  className="font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-                >
-                  Mi perfil
-                </Link>
-              )}
               {role === 'admin' && (
                 <Link
                   href="/admin/alumnos"
@@ -62,6 +54,14 @@ export default async function Header() {
           >
             Cursos
           </Link>
+          {isLoggedIn && role === 'student' && (
+            <Link
+              href="/perfil"
+              className="font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            >
+              Mi perfil
+            </Link>
+          )}
           <DarkModeToggle />
           {isLoggedIn && (
             <form action={logout}>
