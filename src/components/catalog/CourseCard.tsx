@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 type Course = {
   id: number
   name: string
@@ -23,7 +25,10 @@ export default function CourseCard({ course, index }: { course: Course; index: n
     .toUpperCase()
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
+    <Link
+      href={`/cursos/${course.slug}`}
+      className="flex flex-col overflow-hidden rounded-lg border border-zinc-200 transition hover:shadow-lg dark:border-zinc-800 dark:hover:border-zinc-700"
+    >
       <div
         className={`flex h-32 items-center justify-center bg-gradient-to-br sm:h-40 ${gradients[index % gradients.length]}`}
       >
@@ -33,6 +38,6 @@ export default function CourseCard({ course, index }: { course: Course; index: n
         <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">{course.name}</h3>
         <p className="text-sm text-zinc-500 dark:text-zinc-400">{course.description}</p>
       </div>
-    </div>
+    </Link>
   )
 }
