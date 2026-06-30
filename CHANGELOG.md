@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.7.0] — 2026-06-30
+
+### Added
+
+- Dashboard de estudiante en `/dashboard` con lista de cursos matriculados
+- Join de `enrollments` con `courses` para mostrar nombre, slug y descripción
+- Estado vacío con enlace a "Ver cursos" si no hay matrículas
+- Redirección tras login/signup ahora apunta a `/dashboard`
+
 ## [0.6.0] — 2026-06-30
 
 ### Added
