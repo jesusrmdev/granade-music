@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.5.0] — 2026-06-30
+
+### Added
+
+- Página pública `/cursos` con grid responsive de tarjetas de curso
+- `CourseCard` con placeholder gradient + iniciales, nombre y descripción
+- Enlace "Cursos" en el header (visible para todos los usuarios)
+- Tabla `courses` en Supabase con RLS público + seed de 5 cursos
+
 ## [0.4.0] — 2026-06-28
 
 ### Fixed

@@ -239,6 +239,14 @@ The goal is not only to finish the application, but to build it with professiona
 
 # Session Log
 
+## 2026-06-30 — v0.5.0 - Catálogo de cursos
+
+- Feature 004: Página `/cursos` con grid de 5 tarjetas (gradient + iniciales)
+- Branch: `feature/004-catalogo-cursos`, PR #7, merge commit, tag v0.5.0
+- Tabla `courses` en Supabase con RLS público + seed data
+- Enlace "Cursos" en el header visible para todos
+- **Decisión**: Placeholder gradient con iniciales en vez de imágenes (no hay assets)
+
 ## 2026-06-28 — v0.4.1 - Dark mode fix
 
 - **Critical bug**: Dark mode toggle did not switch themes after v0.4.0
