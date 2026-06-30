@@ -36,7 +36,7 @@ export default async function Header() {
                 href={role === 'admin' ? '/admin' : '/dashboard'}
                 className="font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
               >
-                {role === 'admin' ? 'Admin' : 'Dashboard'}
+                {role === 'admin' ? 'Admin' : 'Mi clase'}
               </Link>
               {role === 'admin' && (
                 <Link
