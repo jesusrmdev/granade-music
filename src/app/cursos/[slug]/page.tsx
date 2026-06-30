@@ -15,6 +15,20 @@ type Course = {
   image_url: string | null
 }
 
+type Lesson = {
+  id: number
+  name: string
+  sort_order: number
+}
+
+type Module = {
+  id: number
+  name: string
+  description: string | null
+  sort_order: number
+  lessons: Lesson[]
+}
+
 const gradients: Record<string, string> = {
   'guitarra-iniciacion': 'from-emerald-500 to-teal-700',
   'guitarra-avanzado': 'from-blue-500 to-indigo-700',
@@ -64,6 +78,19 @@ async function getEnrollmentStatus(courseId: number, accessToken: string): Promi
   }
 }
 
+async function getModulesWithLessons(courseId: number): Promise<Module[]> {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/modules?course_id=eq.${courseId}&select=*,lessons(*)&order=sort_order.asc`,
+      { headers: { apikey: ANON_KEY }, cache: 'no-store' },
+    )
+    if (!res.ok) return []
+    return res.json()
+  } catch {
+    return []
+  }
+}
+
 export default async function CourseDetailPage(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params
   const course = await getCourse(slug)
@@ -77,6 +104,7 @@ export default async function CourseDetailPage(props: { params: Promise<{ slug: 
 
   const enrolled = accessToken ? await getEnrollmentStatus(course.id, accessToken) : false
   const gradient = gradients[course.slug] ?? 'from-zinc-500 to-zinc-700'
+  const modules = enrolled ? await getModulesWithLessons(course.id) : []
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6">
@@ -102,6 +130,52 @@ export default async function CourseDetailPage(props: { params: Promise<{ slug: 
           isLoggedIn={!!accessToken}
         />
       </div>
+
+      {enrolled && modules.length > 0 && (
+        <div className="mt-12">
+          <h2 className="mb-6 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Contenido del curso
+          </h2>
+
+          <div className="flex flex-col gap-6">
+            {modules.map(mod => (
+              <div
+                key={mod.id}
+                className="rounded-lg border border-zinc-200 dark:border-zinc-800"
+              >
+                <div className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+                  <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">
+                    {mod.name}
+                  </h3>
+                  {mod.description && (
+                    <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
+                      {mod.description}
+                    </p>
+                  )}
+                </div>
+                {mod.lessons.length > 0 && (
+                  <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                    {mod.lessons
+                      .sort((a, b) => a.sort_order - b.sort_order)
+                      .map(lesson => (
+                        <Link
+                          key={lesson.id}
+                          href={`/clases/${lesson.id}`}
+                          className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-700 transition hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-900"
+                        >
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100 text-xs font-medium text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+                            {lesson.sort_order}
+                          </span>
+                          {lesson.name}
+                        </Link>
+                      ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   )
 }
