@@ -11,6 +11,7 @@ type Alumno = {
   name: string
   last_name: string
   created_at: string
+  progress: number
   enrollments: { id: number; course_name: string }[]
 }
 
@@ -35,10 +36,59 @@ async function getAlumnos(token: string): Promise<Alumno[]> {
       await supabaseGet(`/rest/v1/enrollments?user_id=in.(${userIds})&select=id,user_id,course_id,courses(name)`, token)
 
     const enrollmentsByUser: Record<string, { id: number; course_name: string }[]> = {}
+    const courseIds = new Set<number>()
     if (enrollments) {
       for (const e of enrollments) {
         if (!enrollmentsByUser[e.user_id]) enrollmentsByUser[e.user_id] = []
         enrollmentsByUser[e.user_id].push({ id: e.id, course_name: e.courses.name })
+        courseIds.add(e.course_id)
+      }
+    }
+
+    // Get total lessons per course
+    const lessonsPerCourse: Record<number, number> = {}
+    if (courseIds.size > 0) {
+      const modules: { id: number; course_id: number }[] | null =
+        await supabaseGet(`/rest/v1/modules?course_id=in.(${[...courseIds].join(',')})&select=id,course_id`, token)
+      if (modules && modules.length > 0) {
+        const moduleIds = modules.map(m => m.id).join(',')
+        const lessons: { id: number; module_id: number }[] | null =
+          await supabaseGet(`/rest/v1/lessons?module_id=in.(${moduleIds})&select=id,module_id`, token)
+        if (lessons) {
+          const moduleToCourse = Object.fromEntries(modules.map(m => [m.id, m.course_id]))
+          for (const l of lessons) {
+            const cId = moduleToCourse[l.module_id]
+            if (cId) lessonsPerCourse[cId] = (lessonsPerCourse[cId] ?? 0) + 1
+          }
+        }
+      }
+    }
+
+    // Get all lesson progress for these students
+    const progressByUser: Record<string, number> = {}
+    if (enrollments && courseIds.size > 0) {
+      const progressRows: { user_id: string; lesson_id: number }[] | null =
+        await supabaseGet(`/rest/v1/lesson_progress?user_id=in.(${userIds})&select=user_id,lesson_id`, token)
+      if (progressRows) {
+        const completedByUser: Record<string, Set<number>> = {}
+        for (const p of progressRows) {
+          if (!completedByUser[p.user_id]) completedByUser[p.user_id] = new Set()
+          completedByUser[p.user_id].add(p.lesson_id)
+        }
+
+        for (const user of users) {
+          const userEnrollments = enrollments.filter(e => e.user_id === user.id)
+          if (userEnrollments.length > 0) {
+            const userCourseIds = userEnrollments.map(e => e.course_id)
+            const userTotalLessons = userCourseIds.reduce((sum, cId) => sum + (lessonsPerCourse[cId] ?? 0), 0)
+            const userCompleted = completedByUser[user.id]?.size ?? 0
+            progressByUser[user.id] = userTotalLessons > 0
+              ? Math.round((Math.min(userCompleted, userTotalLessons) / userTotalLessons) * 100)
+              : 0
+          } else {
+            progressByUser[user.id] = 0
+          }
+        }
       }
     }
 
@@ -48,6 +98,7 @@ async function getAlumnos(token: string): Promise<Alumno[]> {
       name: u.name,
       last_name: u.last_name,
       created_at: u.created_at,
+      progress: progressByUser[u.id] ?? 0,
       enrollments: enrollmentsByUser[u.id] ?? [],
     }))
   } catch {
@@ -77,13 +128,14 @@ export default async function AlumnosPage() {
               <th className="px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Nombre</th>
               <th className="px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Email</th>
               <th className="px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Matriculado en</th>
+              <th className="px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Progreso</th>
               <th className="px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Desde</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {alumnos.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-zinc-500">
+                <td colSpan={5} className="px-4 py-8 text-center text-zinc-500">
                   No hay alumnos registrados.
                 </td>
               </tr>
@@ -109,6 +161,17 @@ export default async function AlumnosPage() {
                         ))}
                       </div>
                     )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-16 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+                        <div
+                          className="h-full rounded-full bg-emerald-500 transition-all"
+                          style={{ width: `${a.progress}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-zinc-500 dark:text-zinc-400">{a.progress}%</span>
+                    </div>
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-xs text-zinc-400 dark:text-zinc-500">
                     {new Date(a.created_at).toLocaleDateString('es-ES', {
