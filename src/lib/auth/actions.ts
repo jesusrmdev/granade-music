@@ -60,7 +60,7 @@ export async function login(prevState: AuthState | null, formData: FormData): Pr
     const role = await getUserRole(session.access_token)
     await setRoleCookie(role)
     revalidatePath('/')
-    redirect(role === 'admin' ? '/admin' : '/dashboard')
+    redirect('/cursos')
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Error de autenticación.'
     return {
@@ -87,7 +87,7 @@ export async function signup(prevState: AuthState | null, formData: FormData): P
       await setRoleCookie(role)
     }
     revalidatePath('/')
-    redirect('/dashboard')
+    redirect('/cursos')
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Error al registrarse.'
     return {
