@@ -1,17 +1,5 @@
 # Changelog
 
-## [0.10.0] — 2026-06-30
-
-### Added
-
-- Página `/admin/estudiantes` con tabla de alumnos, cursos matriculados y fecha de registro
-- Enlace "Estudiantes" en la cabecera del panel admin
-- Política RLS para que admins puedan leer todos los usuarios
-
-### Changed
-
-- El enlace "Cursos" del header se oculta para admins (solo ven "Admin")
-
 ## [0.9.0] — 2026-06-30
 
 ### Added
