@@ -239,6 +239,34 @@ The goal is not only to finish the application, but to build it with professiona
 
 # Session Log
 
+## 2026-06-30 — v0.5.1 → v0.9.0 - Matrícula, Dashboard, Admin CRUD, File Upload, Alumnos
+
+- **Feature 005 (Matrícula)**: Branch `feature/005-enrollment`, PR #9, merge commit, tag v0.6.0
+  - Tabla `enrollments` + RLS
+  - Server actions `enroll`, `unenroll`, `isEnrolled` con extracción de `user_id` del JWT via `atob()`
+  - Página `/cursos/[slug]` con botón de matrícula/desmatrícula
+- **Feature 006 (Dashboard)**: Branch `feature/006-student-dashboard`, PR #10, merge commit, tag v0.7.0
+  - Página `/dashboard` con lista de cursos matriculados (join enrollments → courses)
+  - Redirect tras login a `/dashboard`
+- **Feature 007 (Admin CRUD)**: Branch `feature/007-admin-crud`, PR #11, merge commit, tag v0.8.0
+  - Tablas `modules` y `lessons` + RLS admin
+  - Server actions CRUD para cursos, módulos y lecciones
+  - Páginas admin: listado, crear/editar, detalle con listas anidadas
+  - Componente `DeleteButton` reutilizable
+- **Feature 008 (File Upload)**: Branch `feature/008-file-upload`, PR #12, merge commit, tag v0.9.0
+  - Columnas `audio_url`, `pdf_url`, `video_url` en `lessons`
+  - Buckets de Storage: `audio`, `pdfs`, `videos` + RLS
+  - `FileUploader` componente cliente con upload directo a Supabase Storage
+  - Página `/clases/[id]` con reproductores de audio/video y descarga PDF
+  - Temario del curso visible en `/cursos/[slug]` para alumnos matriculados
+- **Alumnos admin**: commit directo en main, tag v0.10.0 → revertido y rehecho
+  - Enlace "Alumnos" en header para admin → `/admin/alumnos`
+  - Tabla con nombre, email, cursos matriculados y fecha de registro
+  - Policy `users_read_admin` para que admins lean todos los usuarios
+- **Schema**: hecho 100% idempotente (`IF NOT EXISTS`, `DROP POLICY IF EXISTS`, `ON CONFLICT DO NOTHING`)
+- **Supabase CLI**: vinculado con access token del usuario para aplicar schema via Management API
+- **V0.10.0**: commit directo a main con Alumnos admin
+
 ## 2026-06-30 — v0.5.0 - Catálogo de cursos
 
 - Feature 004: Página `/cursos` con grid de 5 tarjetas (gradient + iniciales)

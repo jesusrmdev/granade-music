@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.10.0] — 2026-06-30
+
+### Added
+
+- Sección "Alumnos" en el header para administradores (enlace a `/admin/alumnos`)
+- Página `/admin/alumnos` con tabla de estudiantes: nombre, email, cursos matriculados y fecha de registro
+- Política RLS `users_read_admin` para que admins puedan leer todos los usuarios
+
 ## [0.9.0] — 2026-06-30
 
 ### Added
