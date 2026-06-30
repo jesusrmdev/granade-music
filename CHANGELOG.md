@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.0] — 2026-06-30
+
+### Added
+
+- Sistema de matrícula: los estudiantes pueden apuntarse y desapuntarse de cursos
+- Tabla `enrollments` en Supabase con RLS (lectura/inserción/eliminación solo del propio usuario)
+- Server actions: `enroll()`, `unenroll()`, `isEnrolled()` con extracción de `user_id` del JWT
+- Página detalle `/cursos/[slug]` con gradient grande, descripción y botón de matrícula
+- `CourseCard` ahora es clickeable y navega a `/cursos/[slug]`
+- Botón redirige a login si el usuario no está autenticado
+
 ## [0.5.1] — 2026-06-30
 
 ### Fixed
