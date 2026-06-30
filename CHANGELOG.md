@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.8.0] — 2026-06-30
+
+### Added
+
+- Panel de administración en `/admin` con CRUD completo de cursos, módulos y lecciones
+- Tabla `modules` con RLS (lectura pública, escritura solo admin)
+- Tabla `lessons` con RLS (lectura pública, escritura solo admin)
+- Políticas admin para INSERT/UPDATE/DELETE en `courses`
+- Server actions: `createCourse`, `updateCourse`, `deleteCourse`, `createModule`, `updateModule`, `deleteModule`, `createLesson`, `updateLesson`, `deleteLesson`
+- Páginas: lista de cursos, formularios crear/editar, detalle con listas anidadas
+- `DeleteButton` componente cliente reutilizable
+
 ## [0.7.0] — 2026-06-30
 
 ### Added
