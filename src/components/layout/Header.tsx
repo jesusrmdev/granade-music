@@ -38,12 +38,14 @@ export default async function Header() {
               {role === 'admin' ? 'Admin' : 'Dashboard'}
             </Link>
           )}
-          <Link
-            href="/cursos"
-            className="font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-          >
-            Cursos
-          </Link>
+          {role !== 'admin' && (
+            <Link
+              href="/cursos"
+              className="font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+            >
+              Cursos
+            </Link>
+          )}
           <DarkModeToggle />
           {isLoggedIn && (
             <form action={logout}>

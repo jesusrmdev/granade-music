@@ -41,9 +41,17 @@ export default async function AdminPage() {
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Administración
-        </h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+            Administración
+          </h1>
+          <Link
+            href="/admin/estudiantes"
+            className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-900"
+          >
+            Estudiantes
+          </Link>
+        </div>
         <Link
           href="/admin/cursos/nuevo"
           className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
