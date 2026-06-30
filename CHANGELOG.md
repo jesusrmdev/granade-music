@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.9.0] — 2026-06-30
+
+### Added
+
+- Subida de archivos a Supabase Storage (audio, PDF, video) desde el panel admin
+- `FileUploader` componente cliente con upload directo y preview inline
+- Página `/clases/[id]` con reproductor de audio, video y descarga de PDF
+- El detalle del curso `/cursos/[slug]` muestra módulos y lecciones para alumnos matriculados
+- Columnas `audio_url`, `pdf_url`, `video_url` en tabla `lessons`
+- Buckets de Storage: `audio`, `pdfs`, `videos` con RLS
+- Server actions: `saveLessonFile`, `deleteLessonFile`, `deleteFromStorage`
+
+### Changed
+
+- Esquema SQL ahora es 100% idempotente (`IF NOT EXISTS`, `DROP POLICY IF EXISTS`, `ON CONFLICT DO NOTHING`)
+
 ## [0.8.0] — 2026-06-30
 
 ### Added
