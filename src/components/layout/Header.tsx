@@ -31,12 +31,22 @@ export default async function Header() {
 
         <nav className="flex items-center gap-4 text-sm">
           {isLoggedIn && (
-            <Link
-              href={role === 'admin' ? '/admin' : '/dashboard'}
-              className="font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
-            >
-              {role === 'admin' ? 'Admin' : 'Dashboard'}
-            </Link>
+            <>
+              <Link
+                href={role === 'admin' ? '/admin' : '/dashboard'}
+                className="font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+              >
+                {role === 'admin' ? 'Admin' : 'Dashboard'}
+              </Link>
+              {role === 'admin' && (
+                <Link
+                  href="/admin/alumnos"
+                  className="font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50"
+                >
+                  Alumnos
+                </Link>
+              )}
+            </>
           )}
           <Link
             href="/cursos"
