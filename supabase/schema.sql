@@ -98,6 +98,11 @@ DROP POLICY IF EXISTS "enrollments_delete_own" ON public.enrollments;
 CREATE POLICY "enrollments_delete_own" ON public.enrollments
   FOR DELETE USING (auth.uid() = user_id);
 
+-- Admins can read all enrollments
+DROP POLICY IF EXISTS "enrollments_read_admin" ON public.enrollments;
+CREATE POLICY "enrollments_read_admin" ON public.enrollments
+  FOR SELECT USING (public.is_admin());
+
 -- Admin-only write policies for courses
 DROP POLICY IF EXISTS "courses_insert_admin" ON public.courses;
 CREATE POLICY "courses_insert_admin" ON public.courses

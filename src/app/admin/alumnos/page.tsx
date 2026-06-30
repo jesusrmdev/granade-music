@@ -11,24 +11,45 @@ type Alumno = {
   name: string
   last_name: string
   created_at: string
-  enrollments: {
-    id: number
-    course_id: number
-    courses: { name: string }
-  }[]
+  enrollments: { id: number; course_name: string }[]
+}
+
+async function supabaseGet(path: string, token: string) {
+  const res = await fetch(`${SUPABASE_URL}${path}`, {
+    headers: { apikey: ANON_KEY, Authorization: `Bearer ${token}` },
+    cache: 'no-store',
+  })
+  if (!res.ok) return null
+  return res.json()
 }
 
 async function getAlumnos(token: string): Promise<Alumno[]> {
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/users?role=eq.student&select=*,enrollments(*,courses(name))&order=created_at.desc`,
-      {
-        headers: { apikey: ANON_KEY, Authorization: `Bearer ${token}` },
-        cache: 'no-store',
-      },
-    )
-    if (!res.ok) return []
-    return res.json()
+    const users: { id: string; email: string; name: string; last_name: string; created_at: string }[] | null =
+      await supabaseGet('/rest/v1/users?role=eq.student&select=id,email,name,last_name,created_at&order=created_at.desc', token)
+    if (!users || users.length === 0) return []
+
+    const userIds = users.map(u => u.id).join(',')
+
+    const enrollments: { id: number; user_id: string; course_id: number; courses: { name: string } }[] | null =
+      await supabaseGet(`/rest/v1/enrollments?user_id=in.(${userIds})&select=id,user_id,course_id,courses(name)`, token)
+
+    const enrollmentsByUser: Record<string, { id: number; course_name: string }[]> = {}
+    if (enrollments) {
+      for (const e of enrollments) {
+        if (!enrollmentsByUser[e.user_id]) enrollmentsByUser[e.user_id] = []
+        enrollmentsByUser[e.user_id].push({ id: e.id, course_name: e.courses.name })
+      }
+    }
+
+    return users.map(u => ({
+      id: u.id,
+      email: u.email,
+      name: u.name,
+      last_name: u.last_name,
+      created_at: u.created_at,
+      enrollments: enrollmentsByUser[u.id] ?? [],
+    }))
   } catch {
     return []
   }
@@ -83,7 +104,7 @@ export default async function AlumnosPage() {
                             key={e.id}
                             className="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300"
                           >
-                            {e.courses.name}
+                            {e.course_name}
                           </span>
                         ))}
                       </div>
