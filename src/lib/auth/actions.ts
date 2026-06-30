@@ -60,7 +60,7 @@ export async function login(prevState: AuthState | null, formData: FormData): Pr
     const role = await getUserRole(session.access_token)
     await setRoleCookie(role)
     revalidatePath('/')
-    redirect('/dashboard')
+    redirect(role === 'admin' ? '/admin/alumnos' : '/dashboard')
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Error de autenticación.'
     return {
@@ -78,16 +78,17 @@ export async function signup(prevState: AuthState | null, formData: FormData): P
   const password = formData.get('password') as string
   if (!name || !lastName || !email || !password) return { error: 'Todos los campos son obligatorios.' }
 
+  let role: string | null = null
   try {
     const session = await signUp(email, password, { name, lastName })
     if (session.access_token) {
       session.expires_at ??= Math.floor(Date.now() / 1000) + (session.expires_in ?? 3600)
       await setSessionCookie(session)
-      const role = await getUserRole(session.access_token)
+      role = await getUserRole(session.access_token)
       await setRoleCookie(role)
     }
     revalidatePath('/')
-    redirect('/dashboard')
+    redirect(role === 'admin' ? '/admin/alumnos' : '/dashboard')
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Error al registrarse.'
     return {
