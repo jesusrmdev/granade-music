@@ -64,9 +64,10 @@ export async function toggleCompletion(
     if (!userId) return { error: 'Token inválido' }
 
     if (completed) {
-      await supabaseFetch('/rest/v1/lesson_progress', {
+      await supabaseFetch('/rest/v1/lesson_progress?onConflict=user_id,lesson_id', {
         method: 'POST',
         body: JSON.stringify({ lesson_id: lessonId, user_id: userId }),
+        headers: { Prefer: 'resolution=ignore-duplicates' },
       })
     } else {
       await supabaseFetch(
