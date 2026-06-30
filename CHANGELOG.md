@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.1] — 2026-06-30
+
+### Fixed
+
+- Redirección tras login: apuntaba a `/dashboard` y `/admin` (rutas inexistentes), ahora redirige a `/cursos`
+
 ## [0.5.0] — 2026-06-30
 
 ### Added
