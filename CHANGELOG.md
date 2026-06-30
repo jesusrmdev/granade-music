@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.13.0] — 2026-06-30
+
+### Added
+
+- Redirección condicional tras login: alumnos → `/dashboard`, administradores → `/admin/alumnos`
+- Columna de progreso (barra + porcentaje) en tabla de alumnos del admin
+
+### Fixed
+
+- `redirect()` en server actions no funcionaba porque el `catch` bloque atrapaba el `RedirectError` — movido fuera del `try/catch`
+
 ## [0.12.0] — 2026-06-30
 
 ### Added

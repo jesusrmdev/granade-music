@@ -263,6 +263,22 @@ The goal is not only to finish the application, but to build it with professiona
 
 # Session Log
 
+## 2026-06-30 — v0.12.0 → v0.13.0 - Perfil usuario, redirect condicional, progreso admin
+
+- **Feature 011 (Perfil)**: Branch `feature/011-perfil-usuario`, PR #17, merge commit, tag v0.12.0
+  - Página `/perfil` con nombre, apellidos y email (read-only)
+  - Formulario de edición con `useActionState`
+  - Policy RLS `users_update_own`
+  - Server actions: `getProfile`, `updateProfile`
+  - Enlace "Mi perfil" en header (a la derecha de Cursos)
+  - Header: "Dashboard" renombrado a "Mi clase"
+- **Redirect condicional**: commit en main, v0.13.0
+  - Login redirige a alumnos → `/dashboard`, admins → `/admin/alumnos`
+  - Fix: `redirect()` movido fuera de `try/catch` (PR #18, merge commit)
+- **Columna progreso**: barra + porcentaje por alumno en `/admin/alumnos`
+- **Decision**: Separar queries de users y enrollments en admin (nested embedding fallaba por FK a `auth.users`)
+- **Decision**: `public.is_admin()` SECURITY DEFINER para evitar recursión infinita en RLS admin
+
 ## 2026-06-30 — v0.5.1 → v0.9.0 - Matrícula, Dashboard, Admin CRUD, File Upload, Alumnos
 
 - **Feature 005 (Matrícula)**: Branch `feature/005-enrollment`, PR #9, merge commit, tag v0.6.0
