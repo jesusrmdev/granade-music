@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.12.0] — 2026-06-30
+
+### Added
+
+- Página `/perfil` con foto inicial, nombre, apellidos y email
+- Formulario para editar nombre y apellidos
+- Enlace "Mi perfil" en el header del alumno (a la derecha de Cursos)
+- Policy RLS `users_update_own` para que alumnos puedan actualizar su perfil
+- Server actions: `getProfile`, `updateProfile`
+
+### Fixed
+
+- RLS recursion en policies admin usando `public.is_admin()` SECURITY DEFINER
+- Error 23505 (duplicate key) al marcar lección como completada — server action ahora verifica estado en DB
+- NaN en porcentaje de progreso — validación `Array.isArray()` en respuestas JSON
+- Columnas vacías en admin alumnos — queries separadas para evitar nested embedding de PostgREST
+- Progreso no se guardaba en perfil — faltaba policy UPDATE en `public.users`
+
 ## [0.11.0] — 2026-06-30
 
 ### Added
