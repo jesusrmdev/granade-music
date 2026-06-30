@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.11.0] — 2026-06-30
+
+### Added
+
+- Progreso de lecciones: los alumnos pueden marcar/desmarcar lecciones como completadas
+- Botón "Marcar como completada" / "Desmarcar" en la página de clase `/clases/[id]`
+- Checks verdes en el temario del curso para lecciones completadas
+- Contador "X de Y lecciones completadas" en el detalle del curso
+- Barra de progreso con porcentaje en cada tarjeta del dashboard
+- Tabla `lesson_progress` con RLS (alumno lee/escribe propio, admin lee todo)
+- Server actions: `toggleCompletion`, `getLessonProgress`, `getCompletedLessonIds`, `getCourseProgress`
+
 ## [0.10.0] — 2026-06-30
 
 ### Added
