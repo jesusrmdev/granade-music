@@ -28,6 +28,12 @@ CREATE OR REPLACE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
+-- Security definer function to check admin role (bypasses RLS to avoid infinite recursion)
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN LANGUAGE sql SECURITY DEFINER STABLE AS $$
+  SELECT EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin');
+$$;
+
 -- Row Level Security
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
@@ -38,9 +44,7 @@ CREATE POLICY "users_read_own" ON public.users
 
 DROP POLICY IF EXISTS "users_read_admin" ON public.users;
 CREATE POLICY "users_read_admin" ON public.users
-  FOR SELECT USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR SELECT USING (public.is_admin());
 
 -- Courses table
 CREATE TABLE IF NOT EXISTS public.courses (
@@ -97,21 +101,15 @@ CREATE POLICY "enrollments_delete_own" ON public.enrollments
 -- Admin-only write policies for courses
 DROP POLICY IF EXISTS "courses_insert_admin" ON public.courses;
 CREATE POLICY "courses_insert_admin" ON public.courses
-  FOR INSERT WITH CHECK (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR INSERT WITH CHECK (public.is_admin());
 
 DROP POLICY IF EXISTS "courses_update_admin" ON public.courses;
 CREATE POLICY "courses_update_admin" ON public.courses
-  FOR UPDATE USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR UPDATE USING (public.is_admin());
 
 DROP POLICY IF EXISTS "courses_delete_admin" ON public.courses;
 CREATE POLICY "courses_delete_admin" ON public.courses
-  FOR DELETE USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR DELETE USING (public.is_admin());
 
 -- Modules table
 CREATE TABLE IF NOT EXISTS public.modules (
@@ -133,21 +131,15 @@ CREATE POLICY "modules_read_public" ON public.modules
 -- Admin write
 DROP POLICY IF EXISTS "modules_insert_admin" ON public.modules;
 CREATE POLICY "modules_insert_admin" ON public.modules
-  FOR INSERT WITH CHECK (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR INSERT WITH CHECK (public.is_admin());
 
 DROP POLICY IF EXISTS "modules_update_admin" ON public.modules;
 CREATE POLICY "modules_update_admin" ON public.modules
-  FOR UPDATE USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR UPDATE USING (public.is_admin());
 
 DROP POLICY IF EXISTS "modules_delete_admin" ON public.modules;
 CREATE POLICY "modules_delete_admin" ON public.modules
-  FOR DELETE USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR DELETE USING (public.is_admin());
 
 -- Lessons table
 CREATE TABLE IF NOT EXISTS public.lessons (
@@ -169,21 +161,15 @@ CREATE POLICY "lessons_read_public" ON public.lessons
 -- Admin write
 DROP POLICY IF EXISTS "lessons_insert_admin" ON public.lessons;
 CREATE POLICY "lessons_insert_admin" ON public.lessons
-  FOR INSERT WITH CHECK (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR INSERT WITH CHECK (public.is_admin());
 
 DROP POLICY IF EXISTS "lessons_update_admin" ON public.lessons;
 CREATE POLICY "lessons_update_admin" ON public.lessons
-  FOR UPDATE USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR UPDATE USING (public.is_admin());
 
 DROP POLICY IF EXISTS "lessons_delete_admin" ON public.lessons;
 CREATE POLICY "lessons_delete_admin" ON public.lessons
-  FOR DELETE USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR DELETE USING (public.is_admin());
 
 -- Lesson progress table
 CREATE TABLE IF NOT EXISTS public.lesson_progress (
@@ -214,6 +200,4 @@ CREATE POLICY "lesson_progress_delete_own" ON public.lesson_progress
 -- Admins can read all progress
 DROP POLICY IF EXISTS "lesson_progress_read_admin" ON public.lesson_progress;
 CREATE POLICY "lesson_progress_read_admin" ON public.lesson_progress
-  FOR SELECT USING (
-    EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
-  );
+  FOR SELECT USING (public.is_admin());
