@@ -64,25 +64,27 @@ async function getCourseProgress(
       `${SUPABASE_URL}/rest/v1/modules?course_id=eq.${courseId}&select=id`,
       { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
     )
-    const modules: { id: number }[] = await modRes.json()
-    if (modules.length === 0) return { completed: 0, total: 0 }
+    const modules = await modRes.json()
+    if (!Array.isArray(modules) || modules.length === 0) return { completed: 0, total: 0 }
 
-    const moduleIds = modules.map(m => m.id).join(',')
+    const moduleIds = modules.map((m: { id: number }) => m.id).join(',')
     const lessonRes = await fetch(
       `${SUPABASE_URL}/rest/v1/lessons?module_id=in.(${moduleIds})&select=id`,
       { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
     )
-    const lessons: { id: number }[] = await lessonRes.json()
+    const lessons = await lessonRes.json()
+    if (!Array.isArray(lessons)) return { completed: 0, total: 0 }
     const total = lessons.length
     if (total === 0) return { completed: 0, total: 0 }
 
-    const lessonIds = lessons.map(l => l.id).join(',')
+    const lessonIds = lessons.map((l: { id: number }) => l.id).join(',')
     const progressRes = await fetch(
       `${SUPABASE_URL}/rest/v1/lesson_progress?user_id=eq.${userId}&lesson_id=in.(${lessonIds})&select=id`,
       { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
     )
-    const progress: { id: number }[] = await progressRes.json()
-    return { completed: progress.length, total }
+    const progress = await progressRes.json()
+    const completed = Array.isArray(progress) ? progress.length : 0
+    return { completed, total }
   } catch {
     return { completed: 0, total: 0 }
   }

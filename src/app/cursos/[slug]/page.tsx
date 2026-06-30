@@ -100,24 +100,25 @@ async function getCompletedLessonIds(courseId: number, accessToken: string): Pro
       `${SUPABASE_URL}/rest/v1/modules?course_id=eq.${courseId}&select=id`,
       { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
     )
-    const modules: { id: number }[] = await modRes.json()
-    if (modules.length === 0) return []
+    const modules = await modRes.json()
+    if (!Array.isArray(modules) || modules.length === 0) return []
 
-    const moduleIds = modules.map(m => m.id).join(',')
+    const moduleIds = modules.map((m: { id: number }) => m.id).join(',')
     const lessonRes = await fetch(
       `${SUPABASE_URL}/rest/v1/lessons?module_id=in.(${moduleIds})&select=id`,
       { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
     )
-    const lessons: { id: number }[] = await lessonRes.json()
-    if (lessons.length === 0) return []
+    const lessons = await lessonRes.json()
+    if (!Array.isArray(lessons) || lessons.length === 0) return []
 
-    const lessonIds = lessons.map(l => l.id).join(',')
+    const lessonIds = lessons.map((l: { id: number }) => l.id).join(',')
     const progressRes = await fetch(
       `${SUPABASE_URL}/rest/v1/lesson_progress?user_id=eq.${userId}&lesson_id=in.(${lessonIds})&select=lesson_id`,
       { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
     )
-    const progress: { lesson_id: number }[] = await progressRes.json()
-    return progress.map(p => p.lesson_id)
+    const progress = await progressRes.json()
+    if (!Array.isArray(progress)) return []
+    return progress.map((p: { lesson_id: number }) => p.lesson_id)
   } catch {
     return []
   }
