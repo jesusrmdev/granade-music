@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import Link from 'next/link'
 import { redirect, notFound } from 'next/navigation'
 import { getAuthCookieName } from '@/lib/supabase/action'
+import CompletionButton from './CompletionButton'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
 const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
@@ -59,6 +60,24 @@ async function getEnrollmentStatus(
   }
 }
 
+async function getLessonProgress(
+  lessonId: number,
+  accessToken: string,
+): Promise<boolean> {
+  try {
+    const userId = JSON.parse(atob(accessToken.split('.')[1])).sub
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/lesson_progress?lesson_id=eq.${lessonId}&user_id=eq.${userId}&select=id&limit=1`,
+      { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
+    )
+    if (!res.ok) return false
+    const rows = await res.json()
+    return rows.length > 0
+  } catch {
+    return false
+  }
+}
+
 export default async function LessonPage(props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params
   const lesson = await getLesson(id)
@@ -77,6 +96,10 @@ export default async function LessonPage(props: { params: Promise<{ id: string }
   if (!enrolled) {
     redirect(`/cursos/${lesson.modules.courses.slug}`)
   }
+
+  const completed = accessToken
+    ? await getLessonProgress(lesson.id, accessToken)
+    : false
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6">
@@ -97,7 +120,9 @@ export default async function LessonPage(props: { params: Promise<{ id: string }
         <p className="mb-8 text-zinc-600 dark:text-zinc-300">{lesson.description}</p>
       )}
 
-      <div className="flex flex-col gap-6">
+      <CompletionButton lessonId={lesson.id} completed={completed} />
+
+      <div className="mt-6 flex flex-col gap-6">
         {lesson.audio_url && (
           <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
             <h2 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-50">Audio</h2>

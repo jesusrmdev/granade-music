@@ -52,6 +52,42 @@ async function getEnrollments(accessToken: string): Promise<EnrollmentWithCourse
   }
 }
 
+async function getCourseProgress(
+  courseId: number,
+  accessToken: string,
+): Promise<{ completed: number; total: number }> {
+  const userId = getUserIdFromToken(accessToken)
+  if (!userId) return { completed: 0, total: 0 }
+
+  try {
+    const modRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/modules?course_id=eq.${courseId}&select=id`,
+      { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
+    )
+    const modules: { id: number }[] = await modRes.json()
+    if (modules.length === 0) return { completed: 0, total: 0 }
+
+    const moduleIds = modules.map(m => m.id).join(',')
+    const lessonRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/lessons?module_id=in.(${moduleIds})&select=id`,
+      { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
+    )
+    const lessons: { id: number }[] = await lessonRes.json()
+    const total = lessons.length
+    if (total === 0) return { completed: 0, total: 0 }
+
+    const lessonIds = lessons.map(l => l.id).join(',')
+    const progressRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/lesson_progress?user_id=eq.${userId}&lesson_id=in.(${lessonIds})&select=id`,
+      { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
+    )
+    const progress: { id: number }[] = await progressRes.json()
+    return { completed: progress.length, total }
+  } catch {
+    return { completed: 0, total: 0 }
+  }
+}
+
 export default async function DashboardPage() {
   const c = await cookies()
   const name = getAuthCookieName()
@@ -65,6 +101,11 @@ export default async function DashboardPage() {
 
   const accessToken = JSON.parse(sessionCookie.value).access_token as string
   const enrollments = await getEnrollments(accessToken)
+
+  const progressMap: Record<number, { completed: number; total: number }> = {}
+  for (const enr of enrollments) {
+    progressMap[enr.course_id] = await getCourseProgress(enr.course_id, accessToken)
+  }
 
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6">
@@ -99,6 +140,8 @@ export default async function DashboardPage() {
               .join('')
               .slice(0, 2)
               .toUpperCase()
+            const progress = progressMap[enr.course_id] ?? { completed: 0, total: 0 }
+            const pct = progress.total > 0 ? Math.round((progress.completed / progress.total) * 100) : 0
 
             return (
               <Link
@@ -115,6 +158,20 @@ export default async function DashboardPage() {
                   <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
                     {course.name}
                   </h3>
+                  {progress.total > 0 && (
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                        <span>{progress.completed} de {progress.total} lecciones</span>
+                        <span>{pct}%</span>
+                      </div>
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+                        <div
+                          className="h-full rounded-full bg-emerald-500 transition-all"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">
                     {course.description}
                   </p>
