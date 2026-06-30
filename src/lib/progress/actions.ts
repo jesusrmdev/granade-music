@@ -63,13 +63,19 @@ export async function toggleCompletion(
     const userId = getUserIdFromToken(token)
     if (!userId) return { error: 'Token inválido' }
 
-    if (completed) {
-      await supabaseFetch('/rest/v1/lesson_progress?onConflict=user_id,lesson_id', {
+    // Check current DB state to avoid stale-client insert/delete conflicts
+    const checkRes = await supabaseFetch(
+      `/rest/v1/lesson_progress?lesson_id=eq.${lessonId}&user_id=eq.${userId}&select=id&limit=1`,
+    )
+    const rows = await checkRes.json()
+    const isCompleted = rows.length > 0
+
+    if (completed && !isCompleted) {
+      await supabaseFetch('/rest/v1/lesson_progress', {
         method: 'POST',
         body: JSON.stringify({ lesson_id: lessonId, user_id: userId }),
-        headers: { Prefer: 'resolution=ignore-duplicates' },
       })
-    } else {
+    } else if (!completed && isCompleted) {
       await supabaseFetch(
         `/rest/v1/lesson_progress?lesson_id=eq.${lessonId}&user_id=eq.${userId}`,
         { method: 'DELETE' },
