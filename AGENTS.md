@@ -138,6 +138,16 @@ Each feature must have:
 
 Never update CHANGELOG inside feature branches.
 
+## Pre-merge verification (strict)
+
+Before merging any PR, ASK the user:
+
+- "¿Has comprobado que la implementación funciona correctamente?"
+
+If the user says NO or finds issues, fix them in the same feature branch and re-test before merging.
+
+Never merge without explicit user confirmation that the implementation has been verified.
+
 ## Commit Protocol (strict — never skip)
 
 Before every commit, run these checks in order:
