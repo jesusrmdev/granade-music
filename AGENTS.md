@@ -138,6 +138,20 @@ Each feature must have:
 
 Never update CHANGELOG inside feature branches.
 
+## Commit Protocol (strict — never skip)
+
+Before every commit, run these checks in order:
+
+1. `git status` — review ALL modified and untracked files.
+2. `git add` only the files that belong to the feature.
+3. `git diff --stat --cached` — verify exactly what will be committed.
+4. Confirm the staged files match every file you created or modified. If any is missing, add it.
+5. `npm run build && npm run lint` — must pass before commit.
+6. After commit, run `git status` again — confirm clean working tree (zero pending changes).
+7. If `git status` shows remaining unstaged or untracked files that belong to the feature, return to step 2.
+
+**Failure mode to avoid:** Creating files, writing code, building and linting, but forgetting to `git add` them. The working tree must be clean after every commit. Never push with untracked feature files.
+
 ---
 
 # MVP First
