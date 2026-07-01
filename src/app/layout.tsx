@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Granade Music",
   description: "Accede a tu clase",
   manifest: "/manifest.json",
+  themeColor: "#000000",
   icons: [
     { rel: "icon", url: "/logo.png" },
     { rel: "apple-touch-icon", url: "/icon-192.png" },
