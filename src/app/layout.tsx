@@ -12,14 +12,14 @@ export const metadata: Metadata = {
     description: "Accede a tu clase",
     url: "https://granade-music.vercel.app",
     siteName: "Granade Music",
-    images: [{ url: "/logo.png", width: 422, height: 388 }],
+    images: [{ url: "/logo-og.png", width: 422, height: 388 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Granade Music",
     description: "Accede a tu clase",
-    images: ["/logo.png"],
+    images: ["/logo-og.png"],
   },
 };
 
