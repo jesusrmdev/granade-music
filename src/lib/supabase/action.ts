@@ -1,5 +1,12 @@
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
-const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+function env(name: string): string {
+  return process.env[name] ?? process.env[`NEXT_PUBLIC_${name}`] ?? ''
+}
+
+const SUPABASE_URL = env('SUPABASE_URL')
+const ANON_KEY = env('SUPABASE_ANON_KEY')
+
+if (!SUPABASE_URL) throw new Error(`Missing SUPABASE_URL env var — set SUPABASE_URL or NEXT_PUBLIC_SUPABASE_URL in Vercel`)
+if (!ANON_KEY) throw new Error(`Missing SUPABASE_ANON_KEY env var — set SUPABASE_ANON_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel`)
 
 function getProjectRef(): string {
   return SUPABASE_URL.match(/https?:\/\/([^.]+)/)?.[1] ?? ''
