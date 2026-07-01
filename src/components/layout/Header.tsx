@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { getAuthCookieName } from '@/lib/supabase/action'
 import { logout } from '@/lib/auth/actions'
 import DarkModeToggle from './DarkModeToggle'
+import MobileMenu from './MobileMenu'
 
 export default async function Header() {
   const c = await cookies()
@@ -29,7 +30,7 @@ export default async function Header() {
           </span>
         </Link>
 
-        <nav className="flex items-center gap-4 text-sm">
+        <nav className="hidden md:flex items-center gap-4 text-sm">
           {isLoggedIn && (
             <>
               <Link
@@ -74,6 +75,8 @@ export default async function Header() {
             </form>
           )}
         </nav>
+
+        <MobileMenu isLoggedIn={isLoggedIn} role={role} />
       </div>
     </header>
   )
