@@ -1,15 +1,13 @@
-function env(name: string): string {
-  return process.env[name] ?? process.env[`NEXT_PUBLIC_${name}`] ?? ''
+function getSupabaseUrl(): string {
+  return process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
 }
 
-const SUPABASE_URL = env('SUPABASE_URL')
-const ANON_KEY = env('SUPABASE_ANON_KEY')
-
-if (!SUPABASE_URL) throw new Error(`Missing SUPABASE_URL env var — set SUPABASE_URL or NEXT_PUBLIC_SUPABASE_URL in Vercel`)
-if (!ANON_KEY) throw new Error(`Missing SUPABASE_ANON_KEY env var — set SUPABASE_ANON_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel`)
+function getAnonKey(): string {
+  return process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
+}
 
 function getProjectRef(): string {
-  return SUPABASE_URL.match(/https?:\/\/([^.]+)/)?.[1] ?? ''
+  return getSupabaseUrl().match(/https?:\/\/([^.]+)/)?.[1] ?? ''
 }
 
 export function getAuthCookieName(): string {
@@ -17,9 +15,11 @@ export function getAuthCookieName(): string {
 }
 
 export async function signInWithPassword(email: string, password: string) {
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+  const url = getSupabaseUrl()
+  const key = getAnonKey()
+  const res = await fetch(`${url}/auth/v1/token?grant_type=password`, {
     method: 'POST',
-    headers: { apikey: ANON_KEY, 'Content-Type': 'application/json' },
+    headers: { apikey: key, 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
   })
   const body = await res.json()
@@ -28,9 +28,11 @@ export async function signInWithPassword(email: string, password: string) {
 }
 
 export async function signUp(email: string, password: string, data: Record<string, unknown>) {
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+  const url = getSupabaseUrl()
+  const key = getAnonKey()
+  const res = await fetch(`${url}/auth/v1/signup`, {
     method: 'POST',
-    headers: { apikey: ANON_KEY, 'Content-Type': 'application/json' },
+    headers: { apikey: key, 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password, data }),
   })
   const body = await res.json()
@@ -39,8 +41,10 @@ export async function signUp(email: string, password: string, data: Record<strin
 }
 
 export async function getUser(accessToken: string) {
-  const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-    headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` },
+  const url = getSupabaseUrl()
+  const key = getAnonKey()
+  const res = await fetch(`${url}/auth/v1/user`, {
+    headers: { apikey: key, Authorization: `Bearer ${accessToken}` },
   })
   if (!res.ok) return null
   return res.json()
@@ -49,9 +53,11 @@ export async function getUser(accessToken: string) {
 export async function getUserRole(accessToken: string): Promise<string | null> {
   const user = await getUser(accessToken)
   if (!user?.id) return null
+  const url = getSupabaseUrl()
+  const key = getAnonKey()
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/users?id=eq.${user.id}&select=role`,
-    { headers: { apikey: ANON_KEY, Authorization: `Bearer ${accessToken}` } },
+    `${url}/rest/v1/users?id=eq.${user.id}&select=role`,
+    { headers: { apikey: key, Authorization: `Bearer ${accessToken}` } },
   )
   if (!res.ok) return null
   const rows = await res.json()
@@ -59,9 +65,10 @@ export async function getUserRole(accessToken: string): Promise<string | null> {
 }
 
 export function getGoogleOAuthUrl(origin: string) {
+  const url = getSupabaseUrl()
   const params = new URLSearchParams({
     provider: 'google',
     redirect_to: `${origin}/auth/callback`,
   })
-  return `${SUPABASE_URL}/auth/v1/authorize?${params}`
+  return `${url}/auth/v1/authorize?${params}`
 }
