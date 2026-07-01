@@ -263,6 +263,17 @@ The goal is not only to finish the application, but to build it with professiona
 
 # Session Log
 
+## 2026-07-01 — v0.15.0 - OG Meta, Menú Hamburguesa
+
+- **OG Meta Tags**: Open Graph + Twitter card para compartir en redes sociales
+  - `og:image` apunta a `/logo.png` (844×777)
+  - PR #20, merge commit, tag v0.15.0
+- **Menú hamburguesa**: `MobileMenu` componente cliente para navegación responsive
+  - Desktop: nav horizontal sin cambios (`hidden md:flex`)
+  - Móvil (< 768px): icono hamburguesa → panel desplegable con enlaces + dark mode + cerrar sesión
+  - PR #22, merge commit
+- **Fix WhatsApp**: se corrigió con Facebook Sharing Debugger (recrawleo de cache)
+
 ## 2026-07-01 — v0.14.0 - Deploy Vercel
 
 - **Deploy a producción**: Proyecto `granade-music` desplegado en Vercel (Hobby)

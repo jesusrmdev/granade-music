@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0] — 2026-07-01
+
+### Added
+
+- Open Graph meta tags (`og:image`, `og:title`, `og:description`, Twitter card) para compartir enlaces en WhatsApp y redes sociales
+- Menú hamburguesa responsive para móvil (`MobileMenu` componente cliente con toggle)
+
 ## [0.14.0] — 2026-07-01
 
 ### Added
