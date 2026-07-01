@@ -3,9 +3,24 @@ import Header from "@/components/layout/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://granade-music.vercel.app'),
   title: "Granade Music",
   description: "Accede a tu clase",
   icons: [{ rel: "icon", url: "/logo.png" }],
+  openGraph: {
+    title: "Granade Music",
+    description: "Accede a tu clase",
+    url: "https://granade-music.vercel.app",
+    siteName: "Granade Music",
+    images: [{ url: "/logo.png", width: 844, height: 777 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Granade Music",
+    description: "Accede a tu clase",
+    images: ["/logo.png"],
+  },
 };
 
 export default function RootLayout({
