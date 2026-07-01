@@ -6,7 +6,12 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://granade-music.vercel.app'),
   title: "Granade Music",
   description: "Accede a tu clase",
-  icons: [{ rel: "icon", url: "/logo.png" }],
+  manifest: "/manifest.json",
+  icons: [
+    { rel: "icon", url: "/logo.png" },
+    { rel: "apple-touch-icon", url: "/icon-192.png" },
+  ],
+  appleWebApp: { title: "Granade Music", capable: true, statusBarStyle: "default" },
   openGraph: {
     title: "Granade Music",
     description: "Accede a tu clase",
