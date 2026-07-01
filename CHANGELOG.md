@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.14.0] — 2026-07-01
+
+### Added
+
+- Despliegue en Vercel (Production)
+- Env vars inyectadas via `next.config.ts` para compatibilidad con Next.js 16 + Turbopack
+- Preview deployments automáticos por PR
+
+### Fixed
+
+- Env vars `NEXT_PUBLIC_*` no disponibles en server actions de Vercel — lectura lazy dentro de funciones y fallback en `next.config.ts`
+
 ## [0.13.0] — 2026-06-30
 
 ### Added

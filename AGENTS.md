@@ -263,6 +263,17 @@ The goal is not only to finish the application, but to build it with professiona
 
 # Session Log
 
+## 2026-07-01 — v0.14.0 - Deploy Vercel
+
+- **Deploy a producción**: Proyecto `granade-music` desplegado en Vercel (Hobby)
+  - Subdominio: `granade-music.vercel.app`
+  - Builds automáticos por push a `main`
+  - Preview deployments por PR
+- **Fix env vars**: NEXT_PUBLIC_* no se resolvían en server actions de Vercel
+  - Solución: lectura lazy dentro de funciones (no a nivel de módulo)
+  - `next.config.ts` con `env: {}` para inyectar las vars en build y runtime
+  - Fallback a `SUPABASE_URL` / `SUPABASE_ANON_KEY` sin prefijo NEXT_PUBLIC_
+
 ## 2026-06-30 — v0.12.0 → v0.13.0 - Perfil usuario, redirect condicional, progreso admin
 
 - **Feature 011 (Perfil)**: Branch `feature/011-perfil-usuario`, PR #17, merge commit, tag v0.12.0
